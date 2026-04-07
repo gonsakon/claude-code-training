@@ -131,20 +131,32 @@ function prevStep() { if (currentStep.value > 0) currentStep.value-- }
       </div>
 
       <!-- REVIEW DEMO -->
-      <div v-if="stepData.view === 'reviewDemo'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center p-6">
-        <div class="w-full max-w-2xl overflow-hidden rounded-2xl border-2 border-sky-500/50 bg-slate-950">
-          <div class="border-b border-slate-800 bg-slate-900 px-4 py-2 text-xs text-slate-400">.claude/skills/review/SKILL.md</div>
-          <pre class="p-5 font-mono text-xs leading-6 text-slate-300"># Code Review Skill
-<span class="text-sky-300">description</span>: 當使用者說「review」時執行
+      <div v-if="stepData.view === 'reviewDemo'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-3 p-4 md:p-6">
+        <div class="w-full max-w-2xl overflow-hidden rounded-2xl border-2 border-sky-500/50 bg-slate-950 shadow-2xl">
+          <div class="border-b border-slate-800 bg-slate-900 px-4 py-2 text-xs text-slate-400">.claude/skills/code-review/SKILL.md</div>
+          <pre class="p-4 font-mono text-[11px] leading-5 text-slate-300 md:text-xs md:leading-6">---
+<span class="text-amber-300">name</span>: code-review
+<span class="text-amber-300">description</span>: 當使用者要求進行 JS / TS 程式碼審查時使用。
+  適用於「幫我 review」、「檢查這段程式碼」、「有什麼問題」等請求。
+---
 
-## 檢查清單
-1. <span class="text-emerald-300">函式不超過 30 行</span>
-2. <span class="text-emerald-300">沒有 console.log 殘留</span>
-3. <span class="text-emerald-300">變數命名有意義</span>
-4. <span class="text-emerald-300">有錯誤處理</span>
-5. <span class="text-emerald-300">沒有重複程式碼</span></pre>
+# JavaScript Code Review
+
+## 審查重點
+1. <span class="text-emerald-300">命名規範</span>：camelCase、語意清晰
+2. <span class="text-emerald-300">錯誤處理</span>：try-catch、邊界情況
+3. <span class="text-emerald-300">效能問題</span>：迴圈、重複渲染、記憶體洩漏
+4. <span class="text-emerald-300">安全性</span>：XSS、注入攻擊
+5. <span class="text-emerald-300">可讀性</span>：是否需要重構
+
+## 輸出格式
+### 🔴 必須修正
+### 🟡 建議改善
+### 🟢 優點</pre>
         </div>
-        <div class="mt-4 text-sm text-slate-400">每次 review 都依同一份標準 —— 品質穩定</div>
+        <div class="text-center text-xs text-slate-400">
+          ✨ 關鍵在 <span class="text-amber-300">description</span>：包含<span class="text-white">語言、觸發詞、用途</span> Claude 才知道何時觸發
+        </div>
       </div>
 
       <!-- COMMIT DEMO -->
