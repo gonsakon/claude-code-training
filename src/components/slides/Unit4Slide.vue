@@ -8,7 +8,7 @@ import InteractiveSlideTemplate from './InteractiveSlideTemplate.vue'
 defineProps<{ isMobile?: boolean }>()
 const emit = defineEmits<{ (e: 'complete'): void }>()
 
-type StepView = 'intro' | 'concept' | 'structure' | 'anatomy' | 'commitDemo' | 'reviewDemo' | 'asset' | 'summary'
+type StepView = 'intro' | 'concept' | 'structure' | 'anatomy' | 'reviewDemo' | 'commitDemo' | 'asset' | 'summary'
 type Step = { id: number; view: StepView; title: string; desc: string }
 
 const STEPS: Step[] = [
@@ -16,8 +16,8 @@ const STEPS: Step[] = [
   { id: 1, view: 'concept',    title: 'Skill 是什麼？',               desc: '把重複工作寫成一份檔案，Claude 自動觸發、按 SOP 執行。' },
   { id: 2, view: 'structure',  title: '.claude/skills/ 的結構',       desc: '每個 skill 一個資料夾，裡面一個 SKILL.md。' },
   { id: 3, view: 'anatomy',    title: 'SKILL.md 的三個核心',          desc: 'Description（觸發判斷）、觸發條件、執行步驟。' },
-  { id: 4, view: 'commitDemo', title: '學生實作：/commit',            desc: '先一起做一個簡單的 commit message skill 暖身。' },
-  { id: 5, view: 'reviewDemo', title: '進階範例：/code-review',       desc: '把公司的 code review 標準寫進去，每次 review 都一致。' },
+  { id: 4, view: 'reviewDemo', title: '講師帶做：/code-review',       desc: '把公司的 code review 標準寫進去，每次 review 都一致。' },
+  { id: 5, view: 'commitDemo', title: '學生實作：/commit',            desc: '換你動手寫一個產生 commit message 的 skill。' },
   { id: 6, view: 'asset',      title: 'Skill = 團隊知識資產',         desc: '新人一 clone 專案，所有 SOP 自動就位。' },
   { id: 7, view: 'summary',    title: '本單元重點',                  desc: 'Skill 是給 AI 的 SOP 說明書 —— 寫越好，Claude 越強。' },
 ]
@@ -178,9 +178,9 @@ async function copySkill(key: string, source: string) {
       <div v-if="stepData.view === 'structure'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center p-6">
         <pre class="w-full max-w-2xl overflow-hidden rounded-2xl border border-sky-500/30 bg-slate-950 p-5 font-mono text-sm leading-7"><span class="text-slate-400">.claude/
 └── skills/
-    ├── </span><span class="text-sky-300">commit/</span>
+    ├── </span><span class="text-sky-300">code-review/</span>
 <span class="text-slate-400">    │   └── </span><span class="text-emerald-300">SKILL.md</span>
-<span class="text-slate-400">    └── </span><span class="text-sky-300">code-review/</span>
+<span class="text-slate-400">    └── </span><span class="text-sky-300">commit/</span>
 <span class="text-slate-400">        └── </span><span class="text-emerald-300">SKILL.md</span></pre>
       </div>
 
