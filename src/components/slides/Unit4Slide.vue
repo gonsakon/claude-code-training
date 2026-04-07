@@ -8,7 +8,7 @@ import InteractiveSlideTemplate from './InteractiveSlideTemplate.vue'
 defineProps<{ isMobile?: boolean }>()
 const emit = defineEmits<{ (e: 'complete'): void }>()
 
-type StepView = 'intro' | 'concept' | 'structure' | 'anatomy' | 'reviewDemo' | 'commitDemo' | 'asset' | 'summary'
+type StepView = 'intro' | 'concept' | 'structure' | 'anatomy' | 'commitDemo' | 'reviewDemo' | 'asset' | 'summary'
 type Step = { id: number; view: StepView; title: string; desc: string }
 
 const STEPS: Step[] = [
@@ -16,8 +16,8 @@ const STEPS: Step[] = [
   { id: 1, view: 'concept',    title: 'Skill 是什麼？',               desc: '把重複工作寫成一份檔案，Claude 自動觸發、按 SOP 執行。' },
   { id: 2, view: 'structure',  title: '.claude/skills/ 的結構',       desc: '每個 skill 一個資料夾，裡面一個 SKILL.md。' },
   { id: 3, view: 'anatomy',    title: 'SKILL.md 的三個核心',          desc: 'Description（觸發判斷）、觸發條件、執行步驟。' },
-  { id: 4, view: 'reviewDemo', title: '/review 範例',                desc: '把你公司的 code review 標準寫進去，每次 review 都一致。' },
-  { id: 5, view: 'commitDemo', title: '/commit 範例',                desc: '把 git diff 自動轉成符合規範的 commit message。' },
+  { id: 4, view: 'commitDemo', title: '學生實作：/commit',            desc: '先一起做一個簡單的 commit message skill 暖身。' },
+  { id: 5, view: 'reviewDemo', title: '進階範例：/code-review',       desc: '把公司的 code review 標準寫進去，每次 review 都一致。' },
   { id: 6, view: 'asset',      title: 'Skill = 團隊知識資產',         desc: '新人一 clone 專案，所有 SOP 自動就位。' },
   { id: 7, view: 'summary',    title: '本單元重點',                  desc: 'Skill 是給 AI 的 SOP 說明書 —— 寫越好，Claude 越強。' },
 ]
@@ -36,6 +36,43 @@ function triggerStepAnimation() {
 }
 function nextStep() { if (currentStep.value < STEPS.length - 1) currentStep.value++ }
 function prevStep() { if (currentStep.value > 0) currentStep.value-- }
+
+const commitSkillSource = `---
+name: commit
+description: 當使用者要求產生 commit message、commit 訊息、git commit 時使用。會讀取 git diff，依團隊格式產生繁體中文的 conventional commit。
+---
+
+# Commit Message 產生器
+
+當使用者要求 commit 時，請依照以下步驟：
+
+## 執行步驟
+
+1. 跑 \`git diff --staged\`（沒有 staged 就跑 \`git diff\`）讀取修改內容
+2. 分析這次修改的「主要意圖」（新功能 / 修 bug / 重構 / 文件 / 測試）
+3. 依下列格式產出**繁體中文** commit message
+4. 如果改動涵蓋多個範圍，列出主要那一個就好
+
+## 格式
+
+\`\`\`
+類型(範圍)：簡述
+\`\`\`
+
+## 類型對照
+
+- \`feat\`：新功能
+- \`fix\`：修 bug
+- \`refactor\`：重構，不改變行為
+- \`docs\`：文件
+- \`test\`：測試
+
+## 範例
+
+- \`feat(bmi)：新增歷史紀錄功能\`
+- \`fix(login)：修正 token 過期未重新登入\`
+- \`refactor(api)：抽出共用 fetch 包裝\`
+`
 
 const reviewSkillSource = `---
 name: code-review
@@ -68,12 +105,12 @@ description: 當使用者要求進行 JavaScript 或 TypeScript 程式碼審查�
 - [值得肯定的地方]
 `
 
-const copied = ref(false)
-async function copyReviewSkill() {
+const copiedKey = ref<string | null>(null)
+async function copySkill(key: string, source: string) {
   try {
-    await navigator.clipboard.writeText(reviewSkillSource)
-    copied.value = true
-    setTimeout(() => { copied.value = false }, 1500)
+    await navigator.clipboard.writeText(source)
+    copiedKey.value = key
+    setTimeout(() => { copiedKey.value = null }, 1500)
   } catch (e) {
     console.error(e)
   }
@@ -139,18 +176,12 @@ async function copyReviewSkill() {
 
       <!-- STRUCTURE -->
       <div v-if="stepData.view === 'structure'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center p-6">
-        <div class="w-full max-w-2xl overflow-hidden rounded-2xl border border-sky-500/30 bg-slate-950 p-5 font-mono text-sm">
-          <div v-for="(f, i) in [
-            { t: '.claude/',               c: 'text-slate-400', pad: 0 },
-            { t: '└── skills/',            c: 'text-slate-400', pad: 0 },
-            { t: '    ├── review/',        c: 'text-sky-300',   pad: 0 },
-            { t: '    │   └── SKILL.md',   c: 'text-emerald-300', pad: 0 },
-            { t: '    └── commit/',        c: 'text-sky-300',   pad: 0 },
-            { t: '        └── SKILL.md',   c: 'text-emerald-300', pad: 0 },
-          ]" :key="i" :class="[f.c, animState >= i + 1 ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4']"
-            class="py-0.5 transition-all"
-          >{{ f.t }}</div>
-        </div>
+        <pre class="w-full max-w-2xl overflow-hidden rounded-2xl border border-sky-500/30 bg-slate-950 p-5 font-mono text-sm leading-7"><span class="text-slate-400">.claude/
+└── skills/
+    ├── </span><span class="text-sky-300">commit/</span>
+<span class="text-slate-400">    │   └── </span><span class="text-emerald-300">SKILL.md</span>
+<span class="text-slate-400">    └── </span><span class="text-sky-300">code-review/</span>
+<span class="text-slate-400">        └── </span><span class="text-emerald-300">SKILL.md</span></pre>
       </div>
 
       <!-- ANATOMY -->
@@ -179,9 +210,9 @@ async function copyReviewSkill() {
             <span>.claude/skills/code-review/SKILL.md</span>
             <button
               class="flex items-center gap-1 rounded border border-slate-700 bg-slate-800 px-2 py-1 text-[10px] text-slate-300 transition-all hover:border-sky-400 hover:text-sky-300"
-              @click="copyReviewSkill"
+              @click="copySkill('review', reviewSkillSource)"
             >
-              <span v-if="copied" class="text-emerald-300">✓ 已複製</span>
+              <span v-if="copiedKey === 'review'" class="text-emerald-300">✓ 已複製</span>
               <span v-else>📋 複製全部</span>
             </button>
           </div>
@@ -222,23 +253,51 @@ async function copyReviewSkill() {
       </div>
 
       <!-- COMMIT DEMO -->
-      <div v-if="stepData.view === 'commitDemo'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-4 p-6">
-        <div class="w-full max-w-3xl overflow-hidden rounded-2xl border-2 border-sky-500/50 bg-slate-950">
-          <div class="border-b border-slate-800 bg-slate-900 px-4 py-2 text-xs text-slate-400">自動產出 commit message</div>
-          <div class="p-5 font-mono text-xs">
-            <div class="text-slate-500">＞ 使用者：commit</div>
-            <div class="mt-2 text-slate-400">1. 讀 git diff</div>
-            <div class="text-slate-400">2. 分析修改內容</div>
-            <div class="text-slate-400">3. 套用格式：類型(範圍)：描述</div>
-            <div class="mt-3 rounded border border-emerald-500/40 bg-emerald-500/5 p-3 text-emerald-300">
-              ✨ feat(bmi)：新增歷史紀錄功能
-            </div>
+      <div v-if="stepData.view === 'commitDemo'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-3 p-4 md:p-6">
+        <!-- 題詞 -->
+        <div class="w-full max-w-2xl rounded-xl border border-amber-500/40 bg-amber-500/10 p-3 text-center">
+          <div class="text-xs text-amber-300">📝 對 Claude 說：</div>
+          <div class="mt-1 font-mono text-xs text-white md:text-sm">
+            「幫我建立 .claude/skills/commit/SKILL.md，<br />
+            產生 commit message，繁體中文，類型(範圍)：描述」
           </div>
         </div>
-        <div class="flex flex-wrap justify-center gap-2 text-xs">
-          <div v-for="t in ['feat','fix','refactor','docs','test']" :key="t"
-            class="rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-sky-300"
-          >{{ t }}</div>
+        <!-- 產出的 SKILL.md -->
+        <div class="w-full max-w-2xl overflow-hidden rounded-2xl border-2 border-sky-500/50 bg-slate-950 shadow-2xl">
+          <div class="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-4 py-2 text-xs text-slate-400">
+            <span>.claude/skills/commit/SKILL.md</span>
+            <button
+              class="flex items-center gap-1 rounded border border-slate-700 bg-slate-800 px-2 py-1 text-[10px] text-slate-300 transition-all hover:border-sky-400 hover:text-sky-300"
+              @click="copySkill('commit', commitSkillSource)"
+            >
+              <span v-if="copiedKey === 'commit'" class="text-emerald-300">✓ 已複製</span>
+              <span v-else>📋 複製全部</span>
+            </button>
+          </div>
+          <pre class="max-h-[42vh] overflow-y-auto p-4 font-mono text-[10px] leading-5 text-slate-300 md:text-[11px] md:leading-5">---
+<span class="text-amber-300">name</span>: commit
+<span class="text-amber-300">description</span>: 當使用者要求產生 commit message、commit 訊息、git commit 時
+  使用。會讀取 git diff，依團隊格式產生繁體中文的 conventional commit。
+---
+
+# Commit Message 產生器
+
+## 執行步驟
+1. 跑 <span class="text-emerald-300">git diff --staged</span> 讀取修改內容
+2. 分析修改的「主要意圖」
+3. 依下列格式產出**繁體中文** commit message
+
+## 格式
+<span class="text-emerald-300">類型(範圍)：簡述</span>
+
+## 類型對照
+- <span class="text-sky-300">feat</span>：新功能      - <span class="text-sky-300">fix</span>：修 bug
+- <span class="text-sky-300">refactor</span>：重構  - <span class="text-sky-300">docs</span>：文件
+- <span class="text-sky-300">test</span>：測試
+
+## 範例
+- feat(bmi)：新增歷史紀錄功能
+- fix(login)：修正 token 過期未重新登入</pre>
         </div>
       </div>
 
