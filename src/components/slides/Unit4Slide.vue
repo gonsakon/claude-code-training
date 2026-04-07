@@ -197,21 +197,38 @@ async function copySkill(key: string, source: string) {
       </div>
 
       <!-- ANATOMY -->
-      <div v-if="stepData.view === 'anatomy'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center p-6">
-        <div class="grid w-full max-w-4xl gap-3 md:grid-cols-3">
+      <div v-if="stepData.view === 'anatomy'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-3 p-4 md:p-6">
+        <div class="grid w-full max-w-5xl gap-3 md:grid-cols-3">
           <div v-for="(c, i) in [
-            { n: '1', t: 'Description', d: '一句話說明用途 —— Claude 靠這個判斷要不要觸發', ic: '🎯' },
-            { n: '2', t: '觸發條件',     d: '什麼場景下使用，例如「當使用者說 review」',    ic: '⚡' },
-            { n: '3', t: '執行步驟',     d: '具體 SOP，一步一步寫清楚',                    ic: '📋' },
+            { n: '1', t: 'name', d: '小寫字母、數字、連字號 (-)', ic: '🏷️', ex: '✅ code-review\n❌ Code Review、code_review' },
+            { n: '2', t: 'description', d: '觸發 + 用途，包含使用者會講的關鍵字', ic: '🎯', ex: '✅ 當使用者要求 review、檢查程式碼時...\n❌ code review' },
+            { n: '3', t: '內容', d: '審查重點 / 執行步驟 / 輸出格式', ic: '📋', ex: '建議 500 行內，太長就拆 skill\n或把細節丟到外部腳本' },
           ]" :key="c.n"
-            class="rounded-2xl border border-sky-500/30 bg-slate-900/80 p-5 transition-all duration-500"
+            class="rounded-2xl border border-sky-500/30 bg-slate-900/80 p-4 transition-all duration-500"
             :class="animState >= i + 1 ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'"
           >
-            <div class="text-3xl">{{ c.ic }}</div>
-            <div class="mt-2 text-xs text-slate-500">Part {{ c.n }}</div>
-            <div class="text-base font-bold text-sky-300">{{ c.t }}</div>
-            <div class="mt-1 text-xs text-slate-400">{{ c.d }}</div>
+            <div class="flex items-center gap-2">
+              <div class="text-2xl">{{ c.ic }}</div>
+              <div>
+                <div class="text-[10px] text-slate-500">Part {{ c.n }}</div>
+                <div class="font-mono text-sm font-bold text-sky-300">{{ c.t }}</div>
+              </div>
+            </div>
+            <div class="mt-2 text-xs text-slate-400">{{ c.d }}</div>
+            <pre class="mt-2 whitespace-pre-wrap rounded bg-slate-950 p-2 font-mono text-[10px] leading-4 text-slate-300">{{ c.ex }}</pre>
           </div>
+        </div>
+
+        <!-- 完整 frontmatter 範例 -->
+        <div class="w-full max-w-3xl overflow-hidden rounded-2xl border border-amber-500/40 bg-slate-950 shadow-lg">
+          <div class="border-b border-slate-800 bg-slate-900 px-4 py-2 text-[11px] text-amber-300">⚡ 進階：可選欄位</div>
+          <pre class="p-4 font-mono text-[10px] leading-5 text-slate-300 md:text-[11px] md:leading-6">---
+<span class="text-amber-300">name</span>: code-review
+<span class="text-amber-300">description</span>: 當使用者要求 review JS/TS 程式碼時觸發...
+<span class="text-sky-300">allowed-tools</span>: [Read, Grep]        <span class="text-slate-500"># 限制可用工具</span>
+<span class="text-sky-300">user-invocable</span>: true               <span class="text-slate-500"># 允許從 / 選單呼叫</span>
+<span class="text-sky-300">disable-model-invocation</span>: false   <span class="text-slate-500"># 禁止 AI 自動觸發</span>
+---</pre>
         </div>
       </div>
 
