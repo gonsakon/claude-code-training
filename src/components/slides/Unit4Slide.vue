@@ -8,18 +8,20 @@ import InteractiveSlideTemplate from './InteractiveSlideTemplate.vue'
 defineProps<{ isMobile?: boolean }>()
 const emit = defineEmits<{ (e: 'complete'): void }>()
 
-type StepView = 'intro' | 'concept' | 'structure' | 'anatomy' | 'reviewDemo' | 'commitDemo' | 'asset' | 'summary'
+type StepView = 'intro' | 'concept' | 'structure' | 'anatomy' | 'reviewDemo' | 'commitBrief' | 'commitPrompt' | 'commitResult' | 'asset' | 'summary'
 type Step = { id: number; view: StepView; title: string; desc: string }
 
 const STEPS: Step[] = [
-  { id: 0, view: 'intro',      title: '單元 4：把工作流封裝起來',      desc: '寫一次，全團隊用一輩子 —— 這就是 Skill。' },
-  { id: 1, view: 'concept',    title: 'Skill 是什麼？',               desc: '把重複工作寫成一份檔案，Claude 自動觸發、按 SOP 執行。' },
-  { id: 2, view: 'structure',  title: '.claude/skills/ 的結構',       desc: '每個 skill 一個資料夾，裡面一個 SKILL.md。' },
-  { id: 3, view: 'anatomy',    title: 'SKILL.md 的三個核心',          desc: 'Description（觸發判斷）、觸發條件、執行步驟。' },
-  { id: 4, view: 'reviewDemo', title: '講師帶做：/code-review',       desc: '把公司的 code review 標準寫進去，每次 review 都一致。' },
-  { id: 5, view: 'commitDemo', title: '學生實作：/commit',            desc: '換你動手寫一個產生 commit message 的 skill。' },
-  { id: 6, view: 'asset',      title: 'Skill = 團隊知識資產',         desc: '新人一 clone 專案，所有 SOP 自動就位。' },
-  { id: 7, view: 'summary',    title: '本單元重點',                  desc: 'Skill 是給 AI 的 SOP 說明書 —— 寫越好，Claude 越強。' },
+  { id: 0, view: 'intro',        title: '單元 4：把工作流封裝起來',      desc: '寫一次，全團隊用一輩子 —— 這就是 Skill。' },
+  { id: 1, view: 'concept',      title: 'Skill 是什麼？',               desc: '把重複工作寫成一份檔案，Claude 自動觸發、按 SOP 執行。' },
+  { id: 2, view: 'structure',    title: '.claude/skills/ 的結構',       desc: '每個 skill 一個資料夾，裡面一個 SKILL.md。' },
+  { id: 3, view: 'anatomy',      title: 'SKILL.md 的三個核心',          desc: 'Description（觸發判斷）、觸發條件、執行步驟。' },
+  { id: 4, view: 'reviewDemo',   title: '講師帶做：/code-review',       desc: '把公司的 code review 標準寫進去，每次 review 都一致。' },
+  { id: 5, view: 'commitBrief',  title: '學生實作：題目需求',           desc: '我們要做一個 commit message skill。先看需求，想想要怎麼跟 Claude 講。' },
+  { id: 6, view: 'commitPrompt', title: '學生實作：精準題詞',           desc: '同樣是「做一個 skill」，這樣寫 Claude 才知道要產出什麼。' },
+  { id: 7, view: 'commitResult', title: '學生實作：產出範例',           desc: 'Claude 應該產出像這樣的 SKILL.md，對照你自己的成果。' },
+  { id: 8, view: 'asset',        title: 'Skill = 團隊知識資產',         desc: '新人一 clone 專案，所有 SOP 自動就位。' },
+  { id: 9, view: 'summary',      title: '本單元重點',                  desc: 'Skill 是給 AI 的 SOP 說明書 —— 寫越好，Claude 越強。' },
 ]
 
 const currentStep = ref(0)
@@ -36,6 +38,16 @@ function triggerStepAnimation() {
 }
 function nextStep() { if (currentStep.value < STEPS.length - 1) currentStep.value++ }
 function prevStep() { if (currentStep.value > 0) currentStep.value-- }
+
+const commitPromptSource = `幫我建立 .claude/skills/commit/SKILL.md，做一個產生 commit message 的 skill，要求：
+
+1. 觸發：當使用者說「commit」、「幫我寫 commit message」、「commit 訊息」時自動使用
+2. 來源：先讀 git diff --staged，沒有 staged 內容就讀 git diff
+3. 格式：類型(範圍)：簡述（繁體中文，整句不超過 50 字）
+4. 類型：feat / fix / refactor / docs / test
+5. 範例：feat(bmi)：新增歷史紀錄功能
+6. description 欄位要包含上述觸發詞，方便 Claude 判斷
+`
 
 const commitSkillSource = `---
 name: commit
@@ -252,17 +264,62 @@ async function copySkill(key: string, source: string) {
         </div>
       </div>
 
-      <!-- COMMIT DEMO -->
-      <div v-if="stepData.view === 'commitDemo'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-3 p-4 md:p-6">
-        <!-- 題詞 -->
-        <div class="w-full max-w-2xl rounded-xl border border-amber-500/40 bg-amber-500/10 p-3 text-center">
-          <div class="text-xs text-amber-300">📝 對 Claude 說：</div>
-          <div class="mt-1 font-mono text-xs text-white md:text-sm">
-            「幫我建立 .claude/skills/commit/SKILL.md，<br />
-            產生 commit message，繁體中文，類型(範圍)：描述」
+      <!-- COMMIT BRIEF：題目需求 -->
+      <div v-if="stepData.view === 'commitBrief'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-4 p-4 md:p-6">
+        <div class="w-full max-w-3xl rounded-2xl border-2 border-amber-500/50 bg-slate-900/90 p-6 shadow-xl">
+          <div class="flex items-center gap-2 text-amber-300">
+            <span class="text-2xl">🎯</span>
+            <span class="text-base font-bold md:text-lg">學生實作：commit message skill</span>
+          </div>
+          <div class="mt-4 space-y-3 text-sm text-slate-300 md:text-base">
+            <div>請寫一個 skill，要做到：</div>
+            <ol class="ml-6 list-decimal space-y-1.5 text-slate-300">
+              <li>讀取目前修改了哪些檔案（git diff）</li>
+              <li>分析這次修改的<span class="text-white">主要意圖</span></li>
+              <li>產生<span class="text-amber-300">繁體中文</span>的 commit message</li>
+              <li>格式：<span class="font-mono text-emerald-300">類型(範圍)：描述</span></li>
+              <li>類型限定：feat / fix / refactor / docs / test</li>
+            </ol>
           </div>
         </div>
-        <!-- 產出的 SKILL.md -->
+        <div class="max-w-xl rounded-xl border border-sky-500/30 bg-slate-900/60 px-5 py-3 text-center text-sm text-sky-200">
+          💭 想想：這份需求要怎麼跟 Claude 講才精準？下一頁是答案
+        </div>
+      </div>
+
+      <!-- COMMIT PROMPT：精準題詞 -->
+      <div v-if="stepData.view === 'commitPrompt'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-3 p-4 md:p-6">
+        <div class="w-full max-w-3xl overflow-hidden rounded-2xl border-2 border-amber-500/50 bg-slate-950 shadow-2xl">
+          <div class="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-4 py-2 text-xs">
+            <span class="text-amber-300">📝 對 Claude 說：</span>
+            <button
+              class="flex items-center gap-1 rounded border border-slate-700 bg-slate-800 px-2 py-1 text-[10px] text-slate-300 transition-all hover:border-amber-400 hover:text-amber-300"
+              @click="copySkill('commitPrompt', commitPromptSource)"
+            >
+              <span v-if="copiedKey === 'commitPrompt'" class="text-emerald-300">✓ 已複製</span>
+              <span v-else>📋 複製題詞</span>
+            </button>
+          </div>
+          <pre class="max-h-[55vh] overflow-y-auto p-4 font-mono text-[10px] leading-5 text-slate-200 md:text-[11px] md:leading-6">幫我建立 <span class="text-sky-300">.claude/skills/commit/SKILL.md</span>，做一個產生
+commit message 的 skill，要求：
+
+1. <span class="text-amber-300">觸發</span>：當使用者說「commit」、「幫我寫 commit message」、
+   「commit 訊息」時自動使用
+2. <span class="text-amber-300">來源</span>：先讀 <span class="text-emerald-300">git diff --staged</span>，沒有 staged 內容
+   就讀 <span class="text-emerald-300">git diff</span>
+3. <span class="text-amber-300">格式</span>：類型(範圍)：簡述（繁體中文，整句不超過 50 字）
+4. <span class="text-amber-300">類型</span>：feat / fix / refactor / docs / test
+5. <span class="text-amber-300">範例</span>：feat(bmi)：新增歷史紀錄功能
+6. <span class="text-amber-300">description 欄位</span>要包含上述觸發詞，方便 Claude 判斷</pre>
+        </div>
+        <div class="text-center text-xs text-slate-400">
+          ✨ 把<span class="text-white">觸發、來源、格式、類型、範例</span>都列清楚 —— Claude 才不會亂猜
+        </div>
+      </div>
+
+      <!-- COMMIT RESULT：產出範例 -->
+      <div v-if="stepData.view === 'commitResult'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-3 p-4 md:p-6">
+        <div class="text-xs text-slate-400">Claude 應該會產出像這樣的 SKILL.md：</div>
         <div class="w-full max-w-2xl overflow-hidden rounded-2xl border-2 border-sky-500/50 bg-slate-950 shadow-2xl">
           <div class="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-4 py-2 text-xs text-slate-400">
             <span>.claude/skills/commit/SKILL.md</span>
@@ -274,7 +331,7 @@ async function copySkill(key: string, source: string) {
               <span v-else>📋 複製全部</span>
             </button>
           </div>
-          <pre class="max-h-[42vh] overflow-y-auto p-4 font-mono text-[10px] leading-5 text-slate-300 md:text-[11px] md:leading-5">---
+          <pre class="max-h-[50vh] overflow-y-auto p-4 font-mono text-[10px] leading-5 text-slate-300 md:text-[11px] md:leading-5">---
 <span class="text-amber-300">name</span>: commit
 <span class="text-amber-300">description</span>: 當使用者要求產生 commit message、commit 訊息、git commit 時
   使用。會讀取 git diff，依團隊格式產生繁體中文的 conventional commit。
