@@ -13,7 +13,7 @@ type Step = { id: number; view: StepView; title: string; desc: string }
 
 const STEPS: Step[] = [
   { id: 0, view: 'intro',    title: '單元 1：認識 Claude Code', desc: '今天你要親手操作，不是看 Demo。目標：會指令、會操作、懂原理。' },
-  { id: 1, view: 'terminal', title: '三個終端機指令',           desc: 'ls 看東西、mkdir 建資料夾、cd 移動。點卡片看示範。' },
+  { id: 1, view: 'terminal', title: '三個終端機指令 + 一個小技巧', desc: 'ls 看東西、mkdir 建資料夾、cd 移動，&& 把指令串起來一次跑。' },
   { id: 2, view: 'launch',   title: '啟動 Claude Code',        desc: '在乾淨資料夾裡輸入 claude，建立你的第一次對話。' },
   { id: 3, view: 'commands', title: '四個核心指令',             desc: '日常 80% 的操作就靠這四個：/model、/clear、Ctrl+C、Escape。' },
   { id: 4, view: 'practice', title: '親手寫一隻 ASCII 貓',      desc: '同一個指令，每個人的貓都不一樣 —— 為什麼？' },
@@ -32,6 +32,7 @@ const terminalCmds = [
   { cmd: 'ls',                  out: 'Desktop  Documents  Downloads', note: '列出目前資料夾的東西' },
   { cmd: 'mkdir claude-test',   out: '（建立 claude-test 資料夾）',    note: '建一個新資料夾' },
   { cmd: 'cd claude-test',      out: '→ ~/claude-test',                note: '走進那個資料夾' },
+  { cmd: 'A && B',              out: 'A 成功才會跑 B',                  note: '把多個指令串起來一次跑' },
 ]
 
 const commands = [
@@ -109,7 +110,7 @@ function prevStep() { if (currentStep.value > 0) currentStep.value-- }
 
       <!-- TERMINAL -->
       <div v-if="stepData.view === 'terminal'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-4 p-6">
-        <div class="grid w-full max-w-4xl gap-3 md:grid-cols-3">
+        <div class="grid w-full max-w-5xl gap-3 md:grid-cols-4">
           <button
             v-for="(t, i) in terminalCmds" :key="t.cmd"
             class="group rounded-2xl border border-slate-700 bg-slate-900/80 p-4 text-left transition-all duration-500 hover:border-sky-400 hover:bg-slate-800"
@@ -242,18 +243,34 @@ function prevStep() { if (currentStep.value > 0) currentStep.value-- }
       </div>
 
       <!-- SUMMARY -->
-      <div v-if="stepData.view === 'summary'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-4 p-6">
-        <div class="rounded-3xl border-2 border-sky-500/50 bg-slate-900 p-6 text-center">
-          <div class="text-6xl">🎯</div>
-          <div class="mt-3 text-2xl font-bold text-white">你學會了</div>
+      <div v-if="stepData.view === 'summary'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-4 p-4 md:p-6">
+        <div class="text-center">
+          <div class="text-4xl">📋</div>
+          <div class="mt-2 text-xl font-bold text-white md:text-2xl">指令小抄（帶回家用）</div>
         </div>
-        <div class="grid w-full max-w-3xl gap-3 md:grid-cols-2">
-          <div v-for="(t, i) in ['終端機 ls / mkdir / cd','啟動 claude & 信任資料夾','/model /clear Ctrl+C Esc','Token 預測原理 & 安全邊界']" :key="t"
-            class="rounded-xl border border-sky-500/30 bg-slate-900/60 p-3 text-sm text-sky-200 transition-all duration-500"
-            :class="animState >= i + 1 ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'"
-          >✓ {{ t }}</div>
+        <div class="w-full max-w-3xl overflow-hidden rounded-2xl border border-sky-500/30 bg-slate-900/80 shadow-xl">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-800/80 text-xs uppercase text-slate-400">
+              <tr>
+                <th class="px-4 py-2 text-left">類別</th>
+                <th class="px-4 py-2 text-left">指令</th>
+                <th class="px-4 py-2 text-left">用途</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 font-mono text-xs md:text-sm">
+              <tr><td class="px-4 py-2 text-slate-500">終端機</td><td class="px-4 py-2 text-sky-300">ls</td><td class="px-4 py-2 text-slate-300">列出資料夾內容</td></tr>
+              <tr><td class="px-4 py-2 text-slate-500">終端機</td><td class="px-4 py-2 text-sky-300">mkdir &lt;名稱&gt;</td><td class="px-4 py-2 text-slate-300">建立資料夾</td></tr>
+              <tr><td class="px-4 py-2 text-slate-500">終端機</td><td class="px-4 py-2 text-sky-300">cd &lt;名稱&gt;</td><td class="px-4 py-2 text-slate-300">進入資料夾</td></tr>
+              <tr><td class="px-4 py-2 text-slate-500">終端機</td><td class="px-4 py-2 text-sky-300">A &amp;&amp; B</td><td class="px-4 py-2 text-slate-300">前一個成功才跑下一個</td></tr>
+              <tr><td class="px-4 py-2 text-slate-500">啟動</td><td class="px-4 py-2 text-emerald-300">claude</td><td class="px-4 py-2 text-slate-300">在當前資料夾啟動 Claude Code</td></tr>
+              <tr><td class="px-4 py-2 text-slate-500">Claude</td><td class="px-4 py-2 text-emerald-300">/model</td><td class="px-4 py-2 text-slate-300">切換 Sonnet / Opus</td></tr>
+              <tr><td class="px-4 py-2 text-slate-500">Claude</td><td class="px-4 py-2 text-emerald-300">/clear</td><td class="px-4 py-2 text-slate-300">清空對話、開新主題</td></tr>
+              <tr><td class="px-4 py-2 text-slate-500">Claude</td><td class="px-4 py-2 text-emerald-300">Ctrl + C</td><td class="px-4 py-2 text-slate-300">中斷 Claude 正在做的事</td></tr>
+              <tr><td class="px-4 py-2 text-slate-500">Claude</td><td class="px-4 py-2 text-emerald-300">Esc</td><td class="px-4 py-2 text-slate-300">取消正在輸入的訊息</td></tr>
+            </tbody>
+          </table>
         </div>
-        <div class="mt-2 text-sm text-slate-400">下一單元：讓 Claude 按你的風格寫 code</div>
+        <div class="text-xs text-slate-400">下一單元：讓 Claude 按你的風格寫 code →</div>
       </div>
     </div>
   </InteractiveSlideTemplate>
