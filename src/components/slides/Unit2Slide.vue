@@ -137,7 +137,10 @@ const fileTree = [
 - 網頁要<span class="text-sky-300">支援手機畫面</span></pre>
         </div>
         <div class="mt-5 max-w-xl rounded-xl border border-sky-500/30 bg-slate-900/80 px-5 py-3 text-center text-sm text-slate-300">
-          每次啟動，Claude <span class="font-bold text-sky-300">都會讀這份檔案</span>，像新同事拿到的 guideline
+          開新對話時 Claude 會<span class="font-bold text-sky-300">載入一次</span>，像新同事拿到的 guideline
+        </div>
+        <div class="mt-3 max-w-xl rounded-xl border border-amber-500/40 bg-amber-500/10 px-5 py-2 text-center text-xs text-amber-200">
+          ⚠️ 寫得<span class="font-bold text-white">精準、簡短</span> —— 太長會吃掉 context 額度，後面對話容易失真
         </div>
       </div>
 
