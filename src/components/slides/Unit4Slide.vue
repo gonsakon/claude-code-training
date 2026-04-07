@@ -36,6 +36,48 @@ function triggerStepAnimation() {
 }
 function nextStep() { if (currentStep.value < STEPS.length - 1) currentStep.value++ }
 function prevStep() { if (currentStep.value > 0) currentStep.value-- }
+
+const reviewSkillSource = `---
+name: code-review
+description: 當使用者要求進行 JavaScript 或 TypeScript 程式碼審查時使用。適用於「幫我 review」、「檢查這段程式碼」、「有什麼問題」等請求。
+---
+
+# JavaScript Code Review
+
+當進行程式碼審查時，請依照以下步驟進行：
+
+## 審查重點
+
+1. **命名規範**：變數、函式命名是否清晰且符合 camelCase
+2. **錯誤處理**：是否有適當的 try-catch 或錯誤邊界處理
+3. **效能問題**：是否有不必要的迴圈、重複渲染或記憶體洩漏風險
+4. **安全性**：是否有 XSS、注入攻擊等潛在風險
+5. **可讀性**：程式碼是否易於理解，是否需要重構
+
+## 輸出格式
+
+請使用以下格式回覆：
+
+### 🔴 必須修正
+- [問題描述] → [建議做法]
+
+### 🟡 建議改善
+- [問題描述] → [建議做法]
+
+### 🟢 優點
+- [值得肯定的地方]
+`
+
+const copied = ref(false)
+async function copyReviewSkill() {
+  try {
+    await navigator.clipboard.writeText(reviewSkillSource)
+    copied.value = true
+    setTimeout(() => { copied.value = false }, 1500)
+  } catch (e) {
+    console.error(e)
+  }
+}
 </script>
 
 <template>
@@ -133,7 +175,16 @@ function prevStep() { if (currentStep.value > 0) currentStep.value-- }
       <!-- REVIEW DEMO -->
       <div v-if="stepData.view === 'reviewDemo'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-3 p-4 md:p-6">
         <div class="w-full max-w-2xl overflow-hidden rounded-2xl border-2 border-sky-500/50 bg-slate-950 shadow-2xl">
-          <div class="border-b border-slate-800 bg-slate-900 px-4 py-2 text-xs text-slate-400">.claude/skills/code-review/SKILL.md</div>
+          <div class="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-4 py-2 text-xs text-slate-400">
+            <span>.claude/skills/code-review/SKILL.md</span>
+            <button
+              class="flex items-center gap-1 rounded border border-slate-700 bg-slate-800 px-2 py-1 text-[10px] text-slate-300 transition-all hover:border-sky-400 hover:text-sky-300"
+              @click="copyReviewSkill"
+            >
+              <span v-if="copied" class="text-emerald-300">✓ 已複製</span>
+              <span v-else>📋 複製全部</span>
+            </button>
+          </div>
           <pre class="max-h-[55vh] overflow-y-auto p-4 font-mono text-[10px] leading-5 text-slate-300 md:text-[11px] md:leading-5">---
 <span class="text-amber-300">name</span>: code-review
 <span class="text-amber-300">description</span>: 當使用者要求進行 JavaScript 或 TypeScript 程式碼審查時
