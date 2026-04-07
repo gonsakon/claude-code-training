@@ -35,10 +35,11 @@ watch(currentStep, () => {
   clearTimers()
   animState.value = 0
   testStatus.value = 'red'
-  schedule(() => triggerStepAnimation(), 100)
+  triggerStepAnimation()
 })
 function triggerStepAnimation() {
-  for (let i = 1; i <= 5; i++) schedule(() => { animState.value = i }, 150 + i * 250)
+  animState.value = 1
+  for (let i = 2; i <= 5; i++) schedule(() => { animState.value = i }, (i - 1) * 120)
 }
 function nextStep() { if (currentStep.value < STEPS.length - 1) currentStep.value++ }
 function prevStep() { if (currentStep.value > 0) currentStep.value-- }

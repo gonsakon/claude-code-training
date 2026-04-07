@@ -53,16 +53,16 @@ watch(currentStep, () => {
   clearTimers()
   animState.value = 0
   tokenShown.value = 0
-  schedule(() => triggerStepAnimation(), 100)
+  triggerStepAnimation()
 })
 
 function triggerStepAnimation() {
-  schedule(() => { animState.value = 1 }, 150)
-  schedule(() => { animState.value = 2 }, 450)
-  schedule(() => { animState.value = 3 }, 750)
-  schedule(() => { animState.value = 4 }, 1050)
+  animState.value = 1
+  schedule(() => { animState.value = 2 }, 120)
+  schedule(() => { animState.value = 3 }, 240)
+  schedule(() => { animState.value = 4 }, 360)
   if (stepData.value.view === 'token') {
-    tokenWords.forEach((_, i) => schedule(() => { tokenShown.value = i + 1 }, 600 + i * 400))
+    tokenWords.forEach((_, i) => schedule(() => { tokenShown.value = i + 1 }, 200 + i * 200))
   }
 }
 

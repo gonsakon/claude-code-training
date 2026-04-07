@@ -40,10 +40,11 @@ onMounted(() => triggerStepAnimation())
 watch(currentStep, () => {
   clearTimers()
   animState.value = 0
-  schedule(() => triggerStepAnimation(), 100)
+  triggerStepAnimation()
 })
 function triggerStepAnimation() {
-  for (let i = 1; i <= 6; i++) schedule(() => { animState.value = i }, 150 + i * 220)
+  animState.value = 1
+  for (let i = 2; i <= 6; i++) schedule(() => { animState.value = i }, (i - 1) * 110)
 }
 function nextStep() { if (currentStep.value < STEPS.length - 1) currentStep.value++ }
 function prevStep() { if (currentStep.value > 0) currentStep.value-- }
