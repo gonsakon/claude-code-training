@@ -134,25 +134,36 @@ function prevStep() { if (currentStep.value > 0) currentStep.value-- }
       <div v-if="stepData.view === 'reviewDemo'" class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-3 p-4 md:p-6">
         <div class="w-full max-w-2xl overflow-hidden rounded-2xl border-2 border-sky-500/50 bg-slate-950 shadow-2xl">
           <div class="border-b border-slate-800 bg-slate-900 px-4 py-2 text-xs text-slate-400">.claude/skills/code-review/SKILL.md</div>
-          <pre class="p-4 font-mono text-[11px] leading-5 text-slate-300 md:text-xs md:leading-6">---
+          <pre class="max-h-[55vh] overflow-y-auto p-4 font-mono text-[10px] leading-5 text-slate-300 md:text-[11px] md:leading-5">---
 <span class="text-amber-300">name</span>: code-review
-<span class="text-amber-300">description</span>: 當使用者要求進行 JS / TS 程式碼審查時使用。
-  適用於「幫我 review」、「檢查這段程式碼」、「有什麼問題」等請求。
+<span class="text-amber-300">description</span>: 當使用者要求進行 JavaScript 或 TypeScript 程式碼審查時
+  使用。適用於「幫我 review」、「檢查這段程式碼」、「有什麼問題」等請求。
 ---
 
 # JavaScript Code Review
 
+當進行程式碼審查時，請依照以下步驟進行：
+
 ## 審查重點
-1. <span class="text-emerald-300">命名規範</span>：camelCase、語意清晰
-2. <span class="text-emerald-300">錯誤處理</span>：try-catch、邊界情況
-3. <span class="text-emerald-300">效能問題</span>：迴圈、重複渲染、記憶體洩漏
-4. <span class="text-emerald-300">安全性</span>：XSS、注入攻擊
-5. <span class="text-emerald-300">可讀性</span>：是否需要重構
+
+1. <span class="text-emerald-300">**命名規範**</span>：變數、函式命名是否清晰且符合 camelCase
+2. <span class="text-emerald-300">**錯誤處理**</span>：是否有適當的 try-catch 或錯誤邊界處理
+3. <span class="text-emerald-300">**效能問題**</span>：是否有不必要的迴圈、重複渲染或記憶體洩漏風險
+4. <span class="text-emerald-300">**安全性**</span>：是否有 XSS、注入攻擊等潛在風險
+5. <span class="text-emerald-300">**可讀性**</span>：程式碼是否易於理解，是否需要重構
 
 ## 輸出格式
+
+請使用以下格式回覆：
+
 ### 🔴 必須修正
+- [問題描述] → [建議做法]
+
 ### 🟡 建議改善
-### 🟢 優點</pre>
+- [問題描述] → [建議做法]
+
+### 🟢 優點
+- [值得肯定的地方]</pre>
         </div>
         <div class="text-center text-xs text-slate-400">
           ✨ 關鍵在 <span class="text-amber-300">description</span>：包含<span class="text-white">語言、觸發詞、用途</span> Claude 才知道何時觸發
