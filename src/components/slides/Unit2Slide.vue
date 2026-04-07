@@ -14,7 +14,7 @@ type Step = { id: number; view: StepView; title: string; desc: string }
 const STEPS: Step[] = [
   { id: 0, view: 'intro',      title: '單元 2：讓 Claude 照你的規矩走', desc: '今天用對照實驗：無設定 vs 有設定，親眼看 Claude 的差別。' },
   { id: 1, view: 'control',    title: '對照組：什麼都不設定',         desc: '直接叫 Claude 做 BMI 網頁 —— 每個人拿到的風格都不同。' },
-  { id: 2, view: 'structure',  title: '.claude 資料夾長這樣',         desc: 'settings.json 管權限、CLAUDE.md 管風格、commands/ 放自訂指令。' },
+  { id: 2, view: 'structure',  title: '.claude 資料夾長這樣',         desc: 'settings.json 管權限、CLAUDE.md 管風格 —— 今天就用這兩個。' },
   { id: 3, view: 'claudeMd',   title: 'CLAUDE.md = 開發規範',         desc: '每次啟動自動被讀進去，像給新同事的風格指南。' },
   { id: 4, view: 'experiment', title: '實驗組：帶規範再做一次',        desc: '同樣的一句話，產出完全跟著你的規範走。' },
   { id: 5, view: 'settings',   title: 'settings.json = 權限',        desc: '信任的就放寬（Edit/Write），不信任的保留確認。' },
@@ -41,7 +41,6 @@ function prevStep() { if (currentStep.value > 0) currentStep.value-- }
 const fileTree = [
   { name: '.claude/',        icon: '📁', depth: 0, hint: '所有設定的家' },
   { name: 'settings.json',   icon: '🔐', depth: 1, hint: '權限：Claude 可以做什麼' },
-  { name: 'commands/',       icon: '📁', depth: 1, hint: '自訂 Slash Command' },
   { name: 'CLAUDE.md',       icon: '📜', depth: 0, hint: '風格規範：Claude 怎麼做' },
 ]
 </script>
