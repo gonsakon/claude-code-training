@@ -36,14 +36,18 @@ const cases = [
   { icon: '🧾', title: '電子發票 CSV',       desc: '「這張發票 5000 元」→ 產出財政部格式' },
 ]
 
+let timers: number[] = []
+function clearTimers() { timers.forEach(t => clearTimeout(t)); timers = [] }
+function schedule(fn: () => void, ms: number) { timers.push(window.setTimeout(fn, ms)) }
 onMounted(() => triggerStepAnimation())
 watch(currentStep, () => {
+  clearTimers()
   animState.value = 0
   caseIdx.value = 0
-  setTimeout(() => triggerStepAnimation(), 100)
+  schedule(() => triggerStepAnimation(), 100)
 })
 function triggerStepAnimation() {
-  for (let i = 1; i <= 6; i++) setTimeout(() => { animState.value = i }, 150 + i * 200)
+  for (let i = 1; i <= 6; i++) schedule(() => { animState.value = i }, 150 + i * 200)
 }
 function nextStep() { if (currentStep.value < STEPS.length - 1) currentStep.value++ }
 function prevStep() { if (currentStep.value > 0) currentStep.value-- }

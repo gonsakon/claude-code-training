@@ -26,13 +26,17 @@ const currentStep = ref(0)
 const animState = ref(0)
 const stepData = computed(() => STEPS[currentStep.value])
 
+let timers: number[] = []
+function clearTimers() { timers.forEach(t => clearTimeout(t)); timers = [] }
+function schedule(fn: () => void, ms: number) { timers.push(window.setTimeout(fn, ms)) }
 onMounted(() => triggerStepAnimation())
 watch(currentStep, () => {
+  clearTimers()
   animState.value = 0
-  setTimeout(() => triggerStepAnimation(), 100)
+  schedule(() => triggerStepAnimation(), 100)
 })
 function triggerStepAnimation() {
-  for (let i = 1; i <= 5; i++) setTimeout(() => { animState.value = i }, 150 + i * 250)
+  for (let i = 1; i <= 5; i++) schedule(() => { animState.value = i }, 150 + i * 250)
 }
 
 function nextStep() { if (currentStep.value < STEPS.length - 1) currentStep.value++ }

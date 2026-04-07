@@ -45,20 +45,24 @@ const commands = [
 const tokenWords = ['一隻', '黑色', '的', '小貓', '在', '屋頂上', '睡覺']
 const tokenShown = ref(0)
 
+let timers: number[] = []
+function clearTimers() { timers.forEach(t => clearTimeout(t)); timers = [] }
+function schedule(fn: () => void, ms: number) { timers.push(window.setTimeout(fn, ms)) }
 onMounted(() => triggerStepAnimation())
 watch(currentStep, () => {
+  clearTimers()
   animState.value = 0
   tokenShown.value = 0
-  setTimeout(() => triggerStepAnimation(), 100)
+  schedule(() => triggerStepAnimation(), 100)
 })
 
 function triggerStepAnimation() {
-  setTimeout(() => { animState.value = 1 }, 150)
-  setTimeout(() => { animState.value = 2 }, 450)
-  setTimeout(() => { animState.value = 3 }, 750)
-  setTimeout(() => { animState.value = 4 }, 1050)
+  schedule(() => { animState.value = 1 }, 150)
+  schedule(() => { animState.value = 2 }, 450)
+  schedule(() => { animState.value = 3 }, 750)
+  schedule(() => { animState.value = 4 }, 1050)
   if (stepData.value.view === 'token') {
-    tokenWords.forEach((_, i) => setTimeout(() => { tokenShown.value = i + 1 }, 600 + i * 400))
+    tokenWords.forEach((_, i) => schedule(() => { tokenShown.value = i + 1 }, 600 + i * 400))
   }
 }
 
