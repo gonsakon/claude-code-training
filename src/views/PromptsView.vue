@@ -30,6 +30,16 @@ const loadError = ref(false)
 const activeId = ref('')
 const copiedKey = ref('')
 const isDark = ref(localStorage.getItem('prompts-theme') === 'dark')
+const doneIds = ref<Set<string>>(
+  new Set(JSON.parse(localStorage.getItem('prompts-done') ?? '[]')),
+)
+
+function toggleDone(id: string) {
+  if (doneIds.value.has(id)) doneIds.value.delete(id)
+  else doneIds.value.add(id)
+  doneIds.value = new Set(doneIds.value)
+  localStorage.setItem('prompts-done', JSON.stringify([...doneIds.value]))
+}
 
 let observer: IntersectionObserver | null = null
 
@@ -94,20 +104,44 @@ onBeforeUnmount(() => observer?.disconnect())
         <!-- 左側錨點選單（桌機） -->
         <aside v-if="data" class="hidden w-52 shrink-0 md:block">
           <nav class="sticky top-8">
-            <p class="mb-3 text-xs tracking-widest text-stone-400 dark:text-slate-500">練習目錄</p>
+            <p class="mb-3 text-xs tracking-widest text-stone-400 dark:text-slate-500">
+              練習目錄（{{ doneIds.size }}/{{ data.exercises.length }} 完成）
+            </p>
             <ul class="space-y-1">
               <li v-for="(ex, i) in data.exercises" :key="ex.id">
-                <button
-                  class="w-full rounded-lg px-3 py-2 text-left text-sm transition-colors"
+                <div
+                  class="flex w-full items-center gap-2 rounded-lg px-2 py-2 transition-colors"
                   :class="
                     activeId === ex.id
-                      ? 'bg-red-50 font-bold text-red-600 dark:bg-red-500/15 dark:text-red-400'
-                      : 'text-stone-500 hover:bg-stone-100 hover:text-stone-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
+                      ? 'bg-red-50 dark:bg-red-500/15'
+                      : 'hover:bg-stone-100 dark:hover:bg-slate-800'
                   "
-                  @click="scrollToExercise(ex.id)"
                 >
-                  {{ i }}. {{ ex.title }}
-                </button>
+                  <button
+                    class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-colors"
+                    :class="
+                      doneIds.has(ex.id)
+                        ? 'border-emerald-500 bg-emerald-500 text-white'
+                        : 'border-stone-300 text-transparent hover:border-emerald-400 dark:border-slate-600'
+                    "
+                    :title="doneIds.has(ex.id) ? '取消完成' : '標記完成'"
+                    @click.stop="toggleDone(ex.id)"
+                  >
+                    ✓
+                  </button>
+                  <button
+                    class="flex-1 text-left text-sm"
+                    :class="[
+                      activeId === ex.id
+                        ? 'font-bold text-red-600 dark:text-red-400'
+                        : 'text-stone-500 hover:text-stone-800 dark:text-slate-400 dark:hover:text-slate-200',
+                      doneIds.has(ex.id) ? 'line-through opacity-60' : '',
+                    ]"
+                    @click="scrollToExercise(ex.id)"
+                  >
+                    {{ i }}. {{ ex.title }}
+                  </button>
+                </div>
               </li>
             </ul>
           </nav>
@@ -154,7 +188,7 @@ onBeforeUnmount(() => observer?.disconnect())
                 "
                 @click="scrollToExercise(ex.id)"
               >
-                {{ i }}. {{ ex.title }}
+                <span v-if="doneIds.has(ex.id)" class="mr-1 text-emerald-400">✓</span>{{ i }}. {{ ex.title }}
               </button>
             </div>
           </nav>
@@ -213,6 +247,17 @@ onBeforeUnmount(() => observer?.disconnect())
               >
                 <span class="font-bold">✓ 做完你會看到：</span>{{ ex.done }}
               </div>
+              <button
+                class="mt-3 rounded-lg px-4 py-2 text-sm font-bold transition-colors"
+                :class="
+                  doneIds.has(ex.id)
+                    ? 'bg-emerald-500 text-white'
+                    : 'border border-stone-300 text-stone-500 hover:border-emerald-400 hover:text-emerald-600 dark:border-slate-600 dark:text-slate-300'
+                "
+                @click="toggleDone(ex.id)"
+              >
+                {{ doneIds.has(ex.id) ? '✓ 這題完成了！' : '做完了？點我打勾' }}
+              </button>
             </section>
 
             <footer
