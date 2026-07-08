@@ -109,17 +109,12 @@ onBeforeUnmount(() => observer?.disconnect())
             </p>
             <ul class="space-y-1">
               <li>
-                <button
-                  class="w-full rounded-lg px-3 py-2 text-left text-sm font-bold transition-colors"
-                  :class="
-                    activeId === 'setup'
-                      ? 'bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400'
-                      : 'text-amber-600 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-slate-800'
-                  "
-                  @click="scrollToExercise('setup')"
+                <router-link
+                  :to="{ name: 'prompts' }"
+                  class="block w-full rounded-lg px-3 py-2 text-left text-sm text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-600 dark:text-slate-500 dark:hover:bg-slate-800"
                 >
-                  🚀 開始前
-                </button>
+                  ← 下載說明
+                </router-link>
               </li>
               <li v-for="(ex, i) in data.exercises" :key="ex.id">
                 <div
@@ -215,38 +210,6 @@ onBeforeUnmount(() => observer?.disconnect())
           <p v-else-if="!data" class="text-stone-500 dark:text-slate-400">題詞載入中…</p>
 
           <template v-else>
-            <!-- 開始前：下載並打開工具包 -->
-            <section id="setup" data-ex-section class="mb-12 scroll-mt-16">
-              <h2 class="text-xl font-bold text-amber-600 dark:text-amber-400">🚀 開始前：先拿到工具包</h2>
-              <p class="mt-2 text-sm text-stone-600 dark:text-slate-300">
-                下面每一題都要用到「練習包」裡的檔案。先花一分鐘把它下載、打開，再從第 0 題開始。
-              </p>
-              <div class="mt-4 space-y-3">
-                <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-500/30 dark:bg-amber-500/10">
-                  <p class="text-sm font-bold text-stone-800 dark:text-slate-100">① 下載練習包</p>
-                  <a
-                    href="https://gonsakon.github.io/claude-code-training/practice-pack.zip"
-                    class="mt-2 inline-block rounded-lg bg-amber-500 px-4 py-2 text-sm font-bold text-white hover:bg-amber-600"
-                  >⬇ 下載 practice-pack.zip</a>
-                </div>
-                <div class="rounded-xl border border-stone-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
-                  <p class="text-sm font-bold text-stone-800 dark:text-slate-100">② 解壓縮</p>
-                  <p class="mt-1 text-sm text-stone-600 dark:text-slate-300">
-                    Mac 雙擊 zip 就會解開；Windows 對著檔案右鍵「解壓縮全部」。會得到一個「ai-workskill-camp-練習包」資料夾。
-                  </p>
-                </div>
-                <div class="rounded-xl border border-stone-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
-                  <p class="text-sm font-bold text-stone-800 dark:text-slate-100">③ 用 Claude 打開這個資料夾</p>
-                  <p class="mt-1 text-sm text-stone-600 dark:text-slate-300">
-                    打開 Claude 的 Code 分頁 →「選擇資料夾」→ 選剛剛解壓出來的「ai-workskill-camp-練習包」。看到它了，就可以開始下面的練習。
-                  </p>
-                </div>
-              </div>
-              <div class="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200">
-                <span class="font-bold">✓ 準備好了：</span>Claude 視窗左上顯示「ai-workskill-camp-練習包」，就從下面第 0 題開始。全程不用寫程式。
-              </div>
-            </section>
-
             <section
               v-for="(ex, i) in data.exercises"
               :id="ex.id"

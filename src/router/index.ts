@@ -12,6 +12,11 @@ export const router = createRouter({
     {
       path: '/prompts',
       name: 'prompts',
+      component: () => import('../views/OnboardingView.vue'),
+    },
+    {
+      path: '/practice',
+      name: 'practice',
       component: () => import('../views/PromptsView.vue'),
     },
     {
