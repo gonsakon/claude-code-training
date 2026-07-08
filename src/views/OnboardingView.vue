@@ -65,6 +65,23 @@ const ZIP = 'https://gonsakon.github.io/claude-code-training/ai-workskill-camp.z
           </div>
         </div>
 
+        <div class="mt-6 rounded-xl border border-sky-200 bg-sky-50 p-5 dark:border-sky-500/30 dark:bg-sky-500/10">
+          <p class="text-base font-bold text-sky-900 dark:text-sky-200">④ 只有最後一關才要：安裝 Node.js</p>
+          <p class="mt-1.5 text-sm text-sky-800/90 dark:text-sky-200/80">
+            前面每一關都用不到，先不用管。只有最後一關「寫程式腳本」，AI 會幫你寫一支小程式、當場跑給你看——
+            那需要電腦先裝好 Node.js（你一樣不用自己寫程式，只是讓 AI 寫的程式跑得起來）。
+          </p>
+          <a
+            href="https://nodejs.org/"
+            target="_blank"
+            rel="noopener"
+            class="mt-3 inline-block rounded-lg bg-sky-600 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-sky-700"
+          >⬇ 到 nodejs.org 下載 LTS 版</a>
+          <p class="mt-2 text-xs text-sky-800/80 dark:text-sky-200/70">
+            Mac 下載 <b>.pkg</b>、Windows 下載 <b>.msi</b>，雙擊安裝檔一路「繼續／Next」到底即可；裝完重開 Claude 桌面版就生效。
+          </p>
+        </div>
+
         <button
           class="mt-8 w-full rounded-xl bg-red-600 py-4 text-lg font-bold text-white transition-colors hover:bg-red-700"
           @click="start"
