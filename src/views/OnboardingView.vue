@@ -52,7 +52,7 @@ const ZIP = 'https://gonsakon.github.io/claude-code-training/practice-pack.zip'
             <p class="text-base font-bold text-stone-900 dark:text-white">② 解壓縮</p>
             <p class="mt-1.5 text-sm text-stone-600 dark:text-slate-300">
               Mac 雙擊 zip 就會解開；Windows 對著檔案右鍵「解壓縮全部」。會得到一個
-              <b>ai-workskill-camp-練習包</b> 資料夾。
+              <b>practice-pack</b> 資料夾。
             </p>
           </div>
 
@@ -60,7 +60,7 @@ const ZIP = 'https://gonsakon.github.io/claude-code-training/practice-pack.zip'
             <p class="text-base font-bold text-stone-900 dark:text-white">③ 用 Claude 打開這個資料夾</p>
             <p class="mt-1.5 text-sm text-stone-600 dark:text-slate-300">
               打開 Claude 的 Code 分頁 →「選擇資料夾」→ 選剛剛解壓出來的
-              <b>ai-workskill-camp-練習包</b>。Claude 視窗左上顯示這個名字，就準備好了。
+              <b>practice-pack</b>。Claude 視窗左上顯示這個名字，就準備好了。
             </p>
           </div>
         </div>
