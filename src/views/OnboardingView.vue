@@ -13,7 +13,7 @@ function start() {
   router.push({ name: 'practice' })
 }
 
-const ZIP = 'https://gonsakon.github.io/claude-code-training/practice-pack.zip'
+const ZIP = 'https://gonsakon.github.io/claude-code-training/ai-workskill-camp.zip'
 </script>
 
 <template>
@@ -45,14 +45,14 @@ const ZIP = 'https://gonsakon.github.io/claude-code-training/practice-pack.zip'
             <a
               :href="ZIP"
               class="mt-3 inline-block rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-amber-600"
-            >⬇ 下載 practice-pack.zip</a>
+            >⬇ 下載 ai-workskill-camp.zip</a>
           </div>
 
           <div class="rounded-xl border border-stone-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
             <p class="text-base font-bold text-stone-900 dark:text-white">② 解壓縮</p>
             <p class="mt-1.5 text-sm text-stone-600 dark:text-slate-300">
               Mac 雙擊 zip 就會解開；Windows 對著檔案右鍵「解壓縮全部」。會得到一個
-              <b>practice-pack</b> 資料夾。
+              <b>ai-workskill-camp</b> 資料夾。
             </p>
           </div>
 
@@ -60,7 +60,7 @@ const ZIP = 'https://gonsakon.github.io/claude-code-training/practice-pack.zip'
             <p class="text-base font-bold text-stone-900 dark:text-white">③ 用 Claude 打開這個資料夾</p>
             <p class="mt-1.5 text-sm text-stone-600 dark:text-slate-300">
               打開 Claude 的 Code 分頁 →「選擇資料夾」→ 選剛剛解壓出來的
-              <b>practice-pack</b>。Claude 視窗左上顯示這個名字，就準備好了。
+              <b>ai-workskill-camp</b>。Claude 視窗左上顯示這個名字，就準備好了。
             </p>
           </div>
         </div>
