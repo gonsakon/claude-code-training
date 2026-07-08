@@ -233,7 +233,7 @@ onBeforeUnmount(() => observer?.disconnect())
                   {{ step.hint }}
                 </p>
                 <p
-                  class="mt-3 rounded-lg border border-dashed border-stone-300 bg-stone-100 px-3 py-2.5 text-[15px] leading-relaxed text-stone-800 dark:border-slate-600 dark:bg-slate-900/70 dark:text-slate-100"
+                  class="mt-3 whitespace-pre-line rounded-lg border border-dashed border-stone-300 bg-stone-100 px-3 py-2.5 text-[15px] leading-relaxed text-stone-800 dark:border-slate-600 dark:bg-slate-900/70 dark:text-slate-100"
                 >
                   {{ step.text }}
                 </p>
