@@ -14,6 +14,7 @@ function start() {
 }
 
 const ZIP = 'https://gonsakon.github.io/claude-code-training/ai-workskill-camp.zip'
+const base = import.meta.env.BASE_URL
 </script>
 
 <template>
@@ -72,13 +73,23 @@ const ZIP = 'https://gonsakon.github.io/claude-code-training/ai-workskill-camp.z
             那需要電腦先裝好 Node.js（你一樣不用自己寫程式，只是讓 AI 寫的程式跑得起來）。
           </p>
           <a
-            href="https://nodejs.org/"
+            href="https://nodejs.org/zh-tw/download"
             target="_blank"
             rel="noopener"
             class="mt-3 inline-block rounded-lg bg-sky-600 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-sky-700"
-          >⬇ 到 nodejs.org 下載 LTS 版</a>
+          >⬇ 到 nodejs.org 下載 LTS 版（繁中頁）</a>
+          <p class="mt-3 text-xs text-sky-800/90 dark:text-sky-200/80">
+            ⚠️ 下載頁上半部有一堆終端機指令，<b>那些完全不用理</b>。<br />
+            <b>Mac</b>：直接點頁面左下角綠色的「<b>macOS 安裝程式 (.pkg)</b>」（見下圖）。<br />
+            <b>Windows</b>：把最上面「取得適用於」改成 Windows，再點下面的安裝程式。
+          </p>
+          <img
+            :src="base + 'img/node-pkg-download.png'"
+            alt="Node.js 下載頁：點左下角綠色的 macOS 安裝程式 .pkg"
+            class="mt-3 w-full rounded-lg border border-sky-200 dark:border-sky-500/30"
+          />
           <p class="mt-2 text-xs text-sky-800/80 dark:text-sky-200/70">
-            Mac 下載 <b>.pkg</b>、Windows 下載 <b>.msi</b>，雙擊安裝檔一路「繼續／Next」到底即可；裝完重開 Claude 桌面版就生效。
+            下載後雙擊安裝檔一路「繼續／Next」到底即可；裝完重開 Claude 桌面版就生效。
           </p>
         </div>
 
